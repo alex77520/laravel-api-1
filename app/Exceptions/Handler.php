@@ -3,11 +3,11 @@
 namespace App\Exceptions;
 
 use Exception;
-use App\Http\HttpStatusCode;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class Handler extends ExceptionHandler
@@ -59,28 +59,28 @@ class Handler extends ExceptionHandler
 
 		$code = 1000;
 		$message = 'success';
-		$statusCode = HttpStatusCode::HTTP_OK;
+		$statusCode = Response::HTTP_OK;
 
 		if ($exception instanceof ValidationException) {
 			$code = 1001;
 			$message = $exception->validator->errors()->first();
-			$statusCode = HttpStatusCode::HTTP_BAD_REQUEST;
+			$statusCode = Response::HTTP_BAD_REQUEST;
 		} else if ($exception instanceof NotFoundHttpException) {
 			$code = 1004;
 			$message = config('errormessages.' . $code);
-			$statusCode = HttpStatusCode::HTTP_NOT_FOUND;
+			$statusCode = Response::HTTP_NOT_FOUND;
 		} else if ($exception instanceof TooManyRequestsHttpException) {
 			$code = 1006;
 			$message = config('errormessages.' . $code);
-			$statusCode = HttpStatusCode::HTTP_TOO_MANY_REQUEST;
+			$statusCode = Response::HTTP_TOO_MANY_REQUESTS;
 		} else if ($exception instanceof AuthenticationException) {
 			$code = 2003;
 			$message = config('errormessages.' . $code);
-			$statusCode = HttpStatusCode::HTTP_UNAUTHORIZED;
+			$statusCode = Response::HTTP_UNAUTHORIZED;
 		} else {
 			$code = 1002;
 			$message = $exception->getMessage();
-			$statusCode = HttpStatusCode::HTTP_INTERNAL_SERVER_ERROR;
+			$statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
 		}
 
 		return response()->json(['code' => $code, 'message' => $message], $statusCode, [], JSON_UNESCAPED_UNICODE);

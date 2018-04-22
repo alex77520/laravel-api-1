@@ -7,11 +7,11 @@
  */
 namespace App\Http\Traits;
 
-use App\Http\HttpStatusCode;
+use Symfony\Component\HttpFoundation\Response;
 
 trait ApiHelper
 {
-	public function success($data = null, $statusCode = HttpStatusCode::HTTP_OK)
+	public function success($data = null, $statusCode = Response::HTTP_OK)
 	{
 		$response = [
 			'code' => 1000,
@@ -22,12 +22,12 @@ trait ApiHelper
 		return response()->json($response, $statusCode, [], JSON_UNESCAPED_UNICODE);
 	}
 
-	public function created($data = null, $statusCode = HttpStatusCode::HTTP_CREATED)
+	public function created($data = null, $statusCode = Response::HTTP_CREATED)
 	{
 		return $this->success($data, $statusCode);
 	}
 
-	public function error($errorCode, $statusCode = HttpStatusCode::HTTP_OK, $errorMessage = '')
+	public function error($errorCode, $statusCode = Response::HTTP_OK, $errorMessage = '')
 	{
 		if ($errorMessage === '') {
 			$errorMessage = $this->getErrorMessage($errorCode);

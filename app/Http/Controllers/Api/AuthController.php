@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use Auth;
 use Socialite;
 use App\Models\User;
-use App\Http\HttpStatusCode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -43,7 +43,7 @@ class AuthController extends Controller
 		$credentials = $request->only('phone', 'password');
 
 		if (!$token = Auth::guard('api')->attempt($credentials)) {
-			$this->error(2001, HttpStatusCode::HTTP_UNAUTHORIZED);
+			$this->error(2001, Response::HTTP_UNAUTHORIZED);
 		}
 
 		return $this->respondWithToken($token);
@@ -55,7 +55,7 @@ class AuthController extends Controller
 			'code' => 'required|string',
 		]);
 		if (!in_array($type, ['weixin'])) {
-			$this->error(2002, HttpStatusCode::HTTP_UNAUTHORIZED);
+			$this->error(2002, Response::HTTP_UNAUTHORIZED);
 		}
 
 		$driver = Socialite::driver($type);
@@ -64,7 +64,7 @@ class AuthController extends Controller
 			$response = $driver->getAccessTokenResponse(code);
 			$oauthUser = $driver->userFromToken($response['access_token']);
 		} catch (\Exception $e) {
-			$this->error(2001, HttpStatusCode::HTTP_UNAUTHORIZED, '参数错误,获取用户信息失败');
+			$this->error(2001, Response::HTTP_UNAUTHORIZED, '参数错误,获取用户信息失败');
 		}
 
 		switch ($type) {
