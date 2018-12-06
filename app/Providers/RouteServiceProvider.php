@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -34,13 +33,15 @@ class RouteServiceProvider extends ServiceProvider
 	 *
 	 * @return void
 	 */
-	public function map(Request $request)
+	public function map()
 	{
-		$this->mapApiRoutes();
+//        $this->mapApiRoutes();
 
 		$this->mapWebRoutes();
 
-		$this->mapV1ApiRoutes();
+		$this->mapApiRoutesVersion1();
+
+		$this->mapApiRoutesVersion2();
 	}
 
 	/**
@@ -66,19 +67,21 @@ class RouteServiceProvider extends ServiceProvider
 	 */
 	protected function mapApiRoutes()
 	{
-		Route::domain('api.laravelapi.test')
-//			->prefix('api')
+		Route::prefix('api')
 			->middleware('api')
 			->namespace($this->namespace)
 			->group(base_path('routes/api.php'));
 	}
 
-	protected function mapV1ApiRoutes()
+	protected function mapApiRoutesVersion1()
 	{
-		Route::domain('api.laravelapi.test')
-			->prefix('v1')
-			->middleware('api')
-			->namespace($this->namespace)
-			->group(base_path('routes/v1.php'));
+		Route::middleware('api')
+			->group(base_path('routes/apis/v1.php'));
+	}
+
+	protected function mapApiRoutesVersion2()
+	{
+		Route::middleware('api')
+			->group(base_path('routes/apis/v2.php'));
 	}
 }
