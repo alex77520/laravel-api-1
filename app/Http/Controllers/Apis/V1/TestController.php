@@ -9,7 +9,7 @@ class TestController extends ApiController
 {
 	public function test(Request $request)
 	{
-		return $this->response->errorForbidden(['hello' => 'world']);
+		return $this->response->errorForbidden('error message');
     }
 
 	public function test2()
